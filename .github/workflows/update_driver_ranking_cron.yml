@@ -26,7 +26,7 @@ jobs:
           
           echo "--- API Response Body ---"
           cat response_body.txt
-          echo "-------------------------"
+          echo "\n-------------------------"
 
           if [ "$http_status" -eq 200 ]; then
             echo "API call successful"
