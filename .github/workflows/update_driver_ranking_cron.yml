@@ -1,0 +1,36 @@
+name: Update driver ranking
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  
+  # This line allows you to run the workflow manually from the Actions tab
+  # on your GitHub repository, which is great for testing.
+  workflow_dispatch:
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the Update driver ranking API
+        # Replace the test API URL with `https://tiga-backend.vercel.app/tiga/open/updateDriverRanking`
+        run: |
+          echo "Sending request to the Update driver ranking API..."
+          http_status=$(curl --write-out '%{http_code}' --silent --output response_body.txt \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"secret_key": "${{ secrets.API_SECRET_KEY }}"}' \
+            https://mp6a3415278cc4a15e2e.free.beeceptor.com/test)
+
+          echo "API responded with status code: $http_status"
+          
+          echo "--- API Response Body ---"
+          cat response_body.txt
+          echo "-------------------------"
+
+          if [ "$http_status" -eq 200 ]; then
+            echo "API call successful"
+          else
+            echo "API call failed with status code $http_status"
+            exit 1
+          fi
