@@ -1,0 +1,15 @@
+{
+  "name": "driver-ranking-update",
+  "version": "1.0.0",
+  "description": "Driver ranking update script for GitHub Actions",
+  "main": "run-ranking-update.js",
+  "scripts": {
+    "update-ranking": "node run-ranking-update.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.812.0",
+    "mongodb": "^6.12.0",
+    "openai": "^4.100.0",
+    "pg": "^8.13.0"
+  }
+}

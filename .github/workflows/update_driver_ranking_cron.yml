@@ -2,36 +2,50 @@ name: Update driver ranking
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    # Runs at 00:00 UTC every day.
+    - cron: '0 0 * * *'
   
   # This line allows you to run the workflow manually from the Actions tab
   # on your GitHub repository, which is great for testing.
   workflow_dispatch:
 
 jobs:
-  call-api:
+  update-ranking:
     runs-on: ubuntu-latest
+
+    # Prevents the job from hanging for 6 hours (GitHub default) if an API freezes.
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: ./scripts
+    
     steps:
-      - name: Call the Update driver ranking API
-        # Replace the test API URL with `https://tiga-backend.vercel.app/tiga/open/updateDriverRanking`
-        run: |
-          echo "Sending request to the Update driver ranking API..."
-          http_status=$(curl --write-out '%{http_code}' --silent --output response_body.txt \
-            -X POST \
-            -H "Content-Type: application/json" \
-            -d '{"secret_key": "${{ secrets.API_SECRET_KEY }}"}' \
-            https://mp6a3415278cc4a15e2e.free.beeceptor.com/test)
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          echo "API responded with status code: $http_status"
-          
-          echo "--- API Response Body ---"
-          cat response_body.txt
-          echo # Just for a new line
-          echo "-------------------------"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
 
-          if [ "$http_status" -eq 200 ]; then
-            echo "API call successful"
-          else
-            echo "API call failed with status code $http_status"
-            exit 1
-          fi
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run driver ranking update
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          AI_PROVIDER: ${{ secrets.AI_PROVIDER }}
+          AWS_REGION_NAME: ${{ secrets.AWS_REGION_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ANTHROPIC_VERSION: ${{ secrets.ANTHROPIC_VERSION }}
+          ANTHROPIC_MODEL_ID: ${{ secrets.ANTHROPIC_MODEL_ID }}
+          AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
+          AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+          AZURE_MODEL_ID: ${{ secrets.AZURE_MODEL_ID }}
+          AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
+        run: npm run update-ranking
