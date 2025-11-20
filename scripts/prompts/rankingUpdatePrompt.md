@@ -4,7 +4,7 @@ Return a single, valid JSON object and nothing else.
 
 This is a community-contributed list, not a gig app. Drivers do not manage their own profiles. Your ranking is a game of incentives to ensure **data health** and **fair exposure**.
 
-1.  **Counteract the 'Cold Start' Problem:** New drivers *must* be given a real chance to be seen. Your ranking is the *only* way they get discovered. This is a high-priority task.
+1.  **Counteract the 'Cold Start' Problem:** New drivers *must* be given a real chance to be seen. Your ranking is the *only* way they get discovered. This is a high-priority task while this should not create a bad experience for user where all good performing drivers are ranked badly.
 2.  **Rank Data, Not 'Driver Effort':** A high rank is based on *user-reported results* (ratings, views). A demotion is not a 'punishment' for the driver, but a sign that the *data entry* is stale, outdated, or no longer relevant to users.
 3.  **Balance Exploration vs. Exploitation:** Your primary goal is to balance **Exploitation** (showing known, good drivers to users) with **Exploration** (giving new and low-ranked drivers a chance to gather new data).
 
@@ -22,7 +22,7 @@ Analyze the past *Prompt Data* to create **one new, balanced ranking** for *all*
 
 ### 4\. Ranking Rules (Follow This Logic)
 
-1.  **Identify 'Fading Stars' (Demote):** A driver with a *high* past rank (e.g., 1-10) who received **zero or very low** recent `rating_count` or `profile_views` is **fading**. Rank them **significantly lower**.
+1.  **Identify 'Fading Stars' (Demote):** A driver with a *high* past rank (e.g., 1-10) who received **zero or very low** recent `rating_count` or `profile_views` is **fading**. Rank them **comparatively lower**.
 
       * **Reason:** This entry is 'stale'. It clogs the top spots and prevents discovery. Demoting it is crucial for data health.
 
@@ -43,6 +43,8 @@ Use the `tag` field to explain your ranking decision for each driver:
   * `"new"`: Use for "New Drivers" (Rule 3).
   * `"top"`: Use for "True Performers" (Rule 4).
   * `""`: For all other drivers.
+
+While ranking should be done following the rules the tags should be used sparsely.
 
 ### 6\. Final Output Format
 
